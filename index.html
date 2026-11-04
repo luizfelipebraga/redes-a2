@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Redes de computadores</title>
+  <style>
+    :root {
+      --ink: #1c1915;
+      --paper: #f3efe6;
+      --rule: #cfc6b6;
+      --wash: #e7e0d2;
+      --quiet: #3e3a34;
+      --acerto: #1b5e34;
+      --erro: #8d2b28;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { font-size: 18px; }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "Iowan Old Style", Palatino, "Palatino Linotype", "Book Antiqua", Georgia, serif;
+      line-height: 1.45;
+    }
+
+    .sheet {
+      width: min(40rem, calc(100% - 2.5rem));
+      margin: 0 auto;
+      padding: 2.75rem 0 5rem;
+    }
+
+    header h1 {
+      margin: 0.15rem 0 0.55rem;
+      font-size: 1.85rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    .kicker,
+    .num {
+      margin: 0;
+      font-size: 0.78rem;
+      font-variant: small-caps;
+      letter-spacing: 0.07em;
+    }
+
+    .lede {
+      margin: 0;
+      max-width: 36rem;
+    }
+
+    .tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem 1.6rem;
+      align-items: baseline;
+      margin-top: 1.6rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.95rem;
+    }
+
+    .tools label { cursor: pointer; }
+
+    input[type="number"] {
+      width: 3.4rem;
+      margin-left: 0.35rem;
+      padding: 0 0 0.05rem;
+      font: inherit;
+      color: inherit;
+      background: transparent;
+      border: 0;
+      border-bottom: 1px solid var(--ink);
+      border-radius: 0;
+    }
+
+    input[type="checkbox"] { accent-color: var(--ink); }
+
+    article {
+      padding: 2rem 0 0.25rem;
+      border-top: 1px solid var(--rule);
+    }
+
+    article:first-of-type { border-top: 0; }
+
+    .stem {
+      margin: 0.45rem 0 1rem;
+      font-size: 1.05rem;
+      font-weight: 500;
+      white-space: pre-wrap;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+
+    .opt {
+      display: grid;
+      grid-template-columns: 1.35rem 1fr;
+      gap: 0.7rem;
+      align-items: start;
+      width: 100%;
+      margin: 0;
+      padding: 0.38rem 0.35rem;
+      font: inherit;
+      color: inherit;
+      text-align: left;
+      background: transparent;
+      border: 0;
+      border-radius: 2px;
+      cursor: pointer;
+    }
+
+    .opt:hover { background: var(--wash); }
+
+    .opt:focus-visible,
+    .abrir:focus-visible,
+    input:focus-visible {
+      outline: 2px solid var(--ink);
+      outline-offset: 3px;
+    }
+
+    .bolinha {
+      width: 1.2rem;
+      height: 1.2rem;
+      margin-top: 0.12rem;
+      border: 1.5px solid var(--ink);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 0.68rem;
+      line-height: 1;
+      font-variant: small-caps;
+    }
+
+    .opt[aria-checked="true"] .bolinha {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .opt.errada[aria-checked="true"] .bolinha {
+      background: var(--erro);
+      border-color: var(--erro);
+    }
+
+    .opt.certa .bolinha {
+      background: var(--acerto);
+      border-color: var(--acerto);
+      color: var(--paper);
+    }
+
+    .status {
+      margin: 0.55rem 0 0;
+      font-size: 0.95rem;
+    }
+
+    .status.certa { color: var(--acerto); }
+
+    .status.errada { color: var(--erro); }
+
+    .abrir {
+      margin: 0.85rem 0 0;
+      padding: 0;
+      font: inherit;
+      color: inherit;
+      background: none;
+      border: 0;
+      text-decoration: underline;
+      text-underline-offset: 0.18em;
+      cursor: pointer;
+    }
+
+    .comentario {
+      margin: 0.85rem 0 0.4rem;
+      padding-left: 1rem;
+      border-left: 1px solid var(--ink);
+    }
+
+    .comentario p {
+      margin: 0 0 0.7rem;
+    }
+
+    .comentario p:last-child { margin-bottom: 0; }
+
+    .parecer { font-style: italic; }
+
+    .vazio {
+      margin: 2rem 0;
+      color: var(--quiet);
+    }
+
+    @media (max-width: 640px) {
+      html { font-size: 17px; }
+      .sheet { width: min(40rem, calc(100% - 1.5rem)); }
+    }
+  </style>
+</head>
+<body>
+  <div class="sheet">
+    <header>
+      <p class="kicker">Caderno</p>
+      <h1>Redes de computadores</h1>
+      <p class="lede">Marque uma alternativa. O comentário de cada questão fica fechado até você abrir.</p>
+    </header>
+    <div class="tools">
+      <label>Ir para a questão
+        <input id="ir" type="number" min="1" max="80" inputmode="numeric">
+      </label>
+      <label><input id="pendentes" type="checkbox"> Só as que ainda não abri</label>
+      <span id="contagem"></span>
+    </div>
+    <main id="lista"></main>
+  </div>
+  <script src="parte-a.js"></script>
+  <script src="parte-b.js"></script>
+  <script>
+    const chave = "caderno-redes-v1";
+    const guardado = JSON.parse(localStorage.getItem(chave) || "{\"m\":{},\"a\":{}}");
+    const marcas = guardado.m;
+    const abertas = guardado.a;
+
+    const lista = document.querySelector("#lista");
+    const contagem = document.querySelector("#contagem");
+    const pendentes = document.querySelector("#pendentes");
+    const ir = document.querySelector("#ir");
+
+    function salvar() {
+      localStorage.setItem(chave, JSON.stringify({ m: marcas, a: abertas }));
+      const n = Object.keys(abertas).length;
+      contagem.textContent = n === 0 ? "" : (n === 1 ? "1 comentário aberto" : n + " comentários abertos");
+    }
+
+    function desenhar() {
+      lista.replaceChildren();
+      const soPendentes = pendentes.checked;
+      let visiveis = 0;
+
+      QUESTOES.forEach(function (q) {
+        if (soPendentes && abertas[q.n]) return;
+        visiveis += 1;
+        const article = document.createElement("article");
+        article.id = "q" + q.n;
+        if (abertas[q.n]) article.classList.add("aberto");
+
+        const num = document.createElement("p");
+        num.className = "num";
+        num.textContent = "Questão " + q.n;
+
+        const stem = document.createElement("p");
+        stem.className = "stem";
+        stem.textContent = q.enunciado;
+
+        const grupo = document.createElement("div");
+        grupo.className = "options";
+        grupo.setAttribute("role", "radiogroup");
+        grupo.setAttribute("aria-label", "Alternativas da questão " + q.n);
+
+        q.opcoes.forEach(function (texto, i) {
+          const botao = document.createElement("button");
+          botao.type = "button";
+          botao.className = "opt";
+          botao.setAttribute("role", "radio");
+          const marcada = marcas[q.n] === i;
+          const jaMarcou = marcas[q.n] !== undefined;
+          const acertou = jaMarcou && marcas[q.n] === q.certa;
+          botao.setAttribute("aria-checked", marcada ? "true" : "false");
+          if (jaMarcou && i === q.certa) botao.classList.add("certa");
+          if (marcada && !acertou) botao.classList.add("errada");
+          const bolinha = document.createElement("span");
+          bolinha.className = "bolinha";
+          bolinha.textContent = "ABCDE"[i];
+
+          const corpo = document.createElement("span");
+          corpo.textContent = texto;
+
+          botao.append(bolinha, corpo);
+          botao.addEventListener("click", function () {
+            marcas[q.n] = i;
+            salvar();
+            const rolagem = window.scrollY;
+            desenhar();
+            window.scrollTo(0, rolagem);
+            const deNovo = document.getElementById("q" + q.n);
+            const foco = deNovo && deNovo.querySelectorAll(".opt")[i];
+            if (foco) foco.focus();
+          });
+          grupo.append(botao);
+        });
+
+        if (marcas[q.n] !== undefined) {
+          const status = document.createElement("p");
+          const acertou = marcas[q.n] === q.certa;
+          status.className = "status " + (acertou ? "certa" : "errada");
+          status.textContent = acertou ? "Correta." : "Incorreta.";
+          grupo.append(status);
+        }
+
+        const abrir = document.createElement("button");
+        abrir.type = "button";
+        abrir.className = "abrir";
+        abrir.setAttribute("aria-expanded", abertas[q.n] ? "true" : "false");
+        abrir.textContent = abertas[q.n] ? "Fechar comentário" : "Comentário";
+        abrir.addEventListener("click", function () {
+          if (abertas[q.n]) delete abertas[q.n];
+          else abertas[q.n] = 1;
+          salvar();
+          const rolagem = window.scrollY;
+          desenhar();
+          const deNovo = document.getElementById("q" + q.n);
+          if (deNovo) {
+            const delta = deNovo.getBoundingClientRect().top;
+            window.scrollTo(0, rolagem);
+            const botao = deNovo.querySelector(".abrir");
+            if (botao) botao.focus();
+          }
+        });
+
+        article.append(num, stem, grupo, abrir);
+
+        if (abertas[q.n]) {
+          const bloco = document.createElement("div");
+          bloco.className = "comentario";
+          if (marcas[q.n] === undefined) {
+            const aviso = document.createElement("p");
+            aviso.className = "parecer";
+            aviso.textContent = "Você ainda não marcou uma alternativa.";
+            bloco.append(aviso);
+          } else {
+            const parecer = document.createElement("p");
+            parecer.className = "parecer";
+            parecer.textContent = marcas[q.n] === q.certa
+              ? "A alternativa que você marcou é a que este comentário sustenta."
+              : "A alternativa que você marcou não é a que este comentário sustenta.";
+            bloco.append(parecer);
+          }
+          const letra = document.createElement("p");
+          letra.textContent = "Alternativa " + "ABCDE"[q.certa] + ".";
+          bloco.append(letra);
+          q.comentario.forEach(function (paragrafo, indice) {
+            if (indice === 0) return;
+            const p = document.createElement("p");
+            p.textContent = paragrafo;
+            bloco.append(p);
+          });
+          article.append(bloco);
+        }
+
+        lista.append(article);
+      });
+
+      if (!visiveis) {
+        const vazio = document.createElement("p");
+        vazio.className = "vazio";
+        vazio.textContent = "Todos os comentários já foram abertos.";
+        lista.append(vazio);
+      }
+    }
+
+    pendentes.addEventListener("change", desenhar);
+    ir.addEventListener("change", function () {
+      const n = Number(ir.value);
+      if (!n) return;
+      pendentes.checked = false;
+      desenhar();
+      const alvo = document.getElementById("q" + n);
+      if (alvo) alvo.scrollIntoView({ block: "start" });
+    });
+
+    salvar();
+    desenhar();
+  </script>
+</body>
+</html>
